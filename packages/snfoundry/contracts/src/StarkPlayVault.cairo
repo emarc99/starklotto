@@ -142,6 +142,18 @@ mod StarkPlayVault {
         amount: u256,
     }
 
+    #[derive(Drop, starknet::Event)]
+    struct MintLimitUpdated {
+        #[key]
+        new_mint_limit: u256,
+    }
+    
+    #[derive(Drop, starknet::Event)]
+    struct BurnLimitUpdated {
+        #[key]
+        new_burn_limit: u256,
+    }
+
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
@@ -341,5 +353,19 @@ mod StarkPlayVault {
     //}
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    fn setMintLimit(ref self: ContractState, new_limit: u256) {
+        self.ownable.assert_only_owner();
+        self.mintLimit.write(new_limit);
+
+        self.emit(MintLimitUpdated { new_mint_limit: new_limit });
+    }
+
+    fn setBurnLimit(ref self: ContractState, new_limit: u256) {
+        self.ownable.assert_only_owner();
+        self.burnLimit.write(new_limit);
+
+        self.emit(BurnLimitUpdated { new_burn_limit: new_limit });
+    }
 
 }
