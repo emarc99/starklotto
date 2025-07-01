@@ -1,5 +1,5 @@
 #[starknet::contract]
-mod StarkPlayVault {
+pub mod StarkPlayVault {
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //imports
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -58,7 +58,7 @@ mod StarkPlayVault {
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     #[constructor]
-    fn constructor(
+    pub fn constructor(
         ref self: ContractState,
         owner: ContractAddress,
         starkPlayToken: ContractAddress,
@@ -143,20 +143,20 @@ mod StarkPlayVault {
     }
 
     #[derive(Drop, starknet::Event)]
-    struct MintLimitUpdated {
-        #[key]
+    pub struct MintLimitUpdated {
+        // #[key]
         new_mint_limit: u256,
     }
     
     #[derive(Drop, starknet::Event)]
-    struct BurnLimitUpdated {
-        #[key]
+    pub struct BurnLimitUpdated {
+        // #[key]
         new_burn_limit: u256,
     }
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    enum Event {
+    pub enum Event {
         #[flat]
         OwnableEvent: OwnableComponent::Event,
         STRKDeposited: STRKDeposited,
@@ -167,6 +167,8 @@ mod StarkPlayVault {
         Unpaused: Unpaused,
         StarkPlayBurnedByOwner: StarkPlayBurnedByOwner,
         FeeCollected: FeeCollected,
+        MintLimitUpdated: MintLimitUpdated,
+        BurnLimitUpdated: BurnLimitUpdated,
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -356,6 +358,8 @@ mod StarkPlayVault {
 
     fn setMintLimit(ref self: ContractState, new_limit: u256) {
         self.ownable.assert_only_owner();
+
+        assert(new_limit > 0, 'Invalid Mint limit');
         self.mintLimit.write(new_limit);
 
         self.emit(MintLimitUpdated { new_mint_limit: new_limit });
@@ -363,6 +367,7 @@ mod StarkPlayVault {
 
     fn setBurnLimit(ref self: ContractState, new_limit: u256) {
         self.ownable.assert_only_owner();
+        assert(new_limit > 0, 'Invalid Burn limit');
         self.burnLimit.write(new_limit);
 
         self.emit(BurnLimitUpdated { new_burn_limit: new_limit });
