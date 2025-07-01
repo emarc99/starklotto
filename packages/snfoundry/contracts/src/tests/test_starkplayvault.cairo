@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::StarkPlayVault::{StarkPlayVault, StarkPlayVault::Event::{MintLimitUpdated, BurnLimitUpdated} };
+    use crate::StarkPlayVault::{StarkPlayVault, IStarkPlayVaultDispatcher, IStarkPlayVaultDispatcherTrait, StarkPlayVault::Event::{MintLimitUpdated, BurnLimitUpdated} };
     use starknet::{contract_address_const, ContractAddress};
     use starknet::{storage::{StorableStoragePointerReadAccess}};
     use snforge_std::{start_cheat_caller_address, stop_cheat_caller_address, test_address};

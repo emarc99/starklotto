@@ -1,3 +1,9 @@
+#[starknet::interface]
+pub trait IStarkPlayVault<TContractState> {
+    fn setMintLimit(ref self: TContractState, new_limit: u256);
+    fn setBurnLimit(ref self: TContractState, new_limit: u256);
+}
+
 #[starknet::contract]
 pub mod StarkPlayVault {
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -356,6 +362,8 @@ pub mod StarkPlayVault {
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    #[abi(embed_v0)]
+    impl StarkPlayVaultImpl of IStarkPlayVault<ContractState> {
     fn setMintLimit(ref self: ContractState, new_limit: u256) {
         self.ownable.assert_only_owner();
 
@@ -372,5 +380,7 @@ pub mod StarkPlayVault {
 
         self.emit(BurnLimitUpdated { new_burn_limit: new_limit });
     }
+
+}
 
 }
